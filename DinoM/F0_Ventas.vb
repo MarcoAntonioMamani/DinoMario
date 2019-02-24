@@ -1032,9 +1032,27 @@ Public Class F0_Ventas
             If (grdetalle.GetValue("tbty5prod") = 0) Then
                 Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
                 ToastNotification.Show(Me, "Por Favor Seleccione  un detalle de producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                grdetalle.Select()
+                grdetalle.Col = 5
+                grdetalle.Focus()
                 Return False
             End If
-
+            If (IsDBNull(grdetalle.GetValue("tbcmin"))) Then
+                Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                ToastNotification.Show(Me, "Por Favor inserte una cantidad al producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                grdetalle.Select()
+                grdetalle.Col = 5
+                grdetalle.Focus()
+                Return False
+            End If
+            If (grdetalle.GetValue("tbcmin") <= 0) Then
+                Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                ToastNotification.Show(Me, "Por Favor inserte una cantidad al producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                grdetalle.Select()
+                grdetalle.Col = 5
+                grdetalle.Focus()
+                Return False
+            End If
         End If
         Return True
     End Function
@@ -1064,8 +1082,8 @@ Public Class F0_Ventas
             End If
 
 
-
-            _Limpiar()
+            _prCargarVenta()
+            _prSalir()
 
         Else
             Dim img As Bitmap = New Bitmap(My.Resources.cancel, 50, 50)
@@ -1712,7 +1730,12 @@ salirIf:
 
         End If
 
+        If (e.KeyData = Keys.Control + Keys.A) Then
 
+            tbMdesc.Focus()
+
+
+        End If
     End Sub
     Private Sub _buscarRegistro(cbarra As String)
         Dim _t As DataTable
@@ -2520,6 +2543,15 @@ salirIf:
                 tbvendedores.Clear()
             End If
 
+        End If
+    End Sub
+
+    Private Sub tbMdesc_KeyDown(sender As Object, e As KeyEventArgs) Handles tbMdesc.KeyDown
+        If (tbObservacion.ReadOnly = True) Then
+            Return
+        End If
+        If (e.KeyData = Keys.Enter) Then
+            btnGrabar.Focus()
         End If
     End Sub
 
