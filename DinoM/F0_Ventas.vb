@@ -706,8 +706,8 @@ Public Class F0_Ventas
         '',gr2.ycdes3 as grupo2 ,a.yfgr3,gr3.ycdes3 as grupo3,a.yfgr4 ,gr4 .ycdes3 as grupo4,a.yfumin ,Umin .ycdes3 as UnidMin
         '' ,b.yhprecio 
         listEstCeldas.Add(New Modelo.Celda("yfnumi,", False, "ID", 50))
-        listEstCeldas.Add(New Modelo.Celda("yfcprod", True, "CODIGO", 80))
-        listEstCeldas.Add(New Modelo.Celda("yfcdprod1", True, "Producto", 430))
+        listEstCeldas.Add(New Modelo.Celda("yfcprod", False, "CODIGO", 80))
+        listEstCeldas.Add(New Modelo.Celda("yfcdprod1", True, "Producto", 350))
         listEstCeldas.Add(New Modelo.Celda("yfcdprod2", False, "", 280))
         listEstCeldas.Add(New Modelo.Celda("yfgr1,", False, "ID", 50))
         listEstCeldas.Add(New Modelo.Celda("grupo1,", False, "ID", 50))
