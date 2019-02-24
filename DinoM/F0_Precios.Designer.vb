@@ -179,7 +179,6 @@ Partial Class F0_Precios
         '
         'btnUltimo
         '
-        Me.btnUltimo.Location = New System.Drawing.Point(171, 0)
         Me.btnUltimo.Margin = New System.Windows.Forms.Padding(2)
         '
         'LblPaginacion
@@ -199,7 +198,6 @@ Partial Class F0_Precios
         Me.PanelContent.Controls.Add(Me.PanelPrecios)
         Me.PanelContent.Controls.Add(Me.PanelCategoria)
         Me.PanelContent.Margin = New System.Windows.Forms.Padding(2)
-        Me.PanelContent.Size = New System.Drawing.Size(1275, 553)
         '
         'Panel1
         '
@@ -208,7 +206,6 @@ Partial Class F0_Precios
         'MSuperTabControlPanel1
         '
         Me.MSuperTabControlPanel1.Margin = New System.Windows.Forms.Padding(2)
-        Me.MSuperTabControlPanel1.Size = New System.Drawing.Size(1275, 553)
         '
         'MSuperTabControl
         '
