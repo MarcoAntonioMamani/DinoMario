@@ -245,7 +245,7 @@ Public Class F1_Clientes
         _prCrearCarpetaTemporal()
 
 
-        tbNombre.Focus()
+        cbSucursal.Focus()
         ''  SuperTabItem1.Visible =True 
     End Sub
 
@@ -319,7 +319,13 @@ Public Class F1_Clientes
         End If
         NumiVendedor = 0
         tbVendedor.Clear()
-        tbNombre.Focus()
+        Dim dt As DataTable = L_fnNumiClientes()
+        If (Not IsDBNull(dt)) Then
+            If (dt.Rows.Count > 0) Then
+                tbCodCliente.Text = dt.Rows(0).Item(0)
+            End If
+        End If
+        cbSucursal.Focus()
     End Sub
 
     Public Overrides Sub _PMOLimpiarErrores()

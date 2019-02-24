@@ -597,7 +597,17 @@ Public Class AccesoLogica
 #End Region
 
 #Region "TY004 CLIENTES"
+    Public Shared Function L_fnNumiClientes() As DataTable
+        Dim _Tabla As DataTable
 
+        Dim _listParam As New List(Of Datos.DParametro)
+
+        _listParam.Add(New Datos.DParametro("@tipo", 13))
+        _listParam.Add(New Datos.DParametro("@yduact", L_Usuario))
+        _Tabla = D_ProcedimientoConParam("sp_Mam_TY004", _listParam)
+
+        Return _Tabla
+    End Function
 
     Public Shared Function L_fnEliminarClientes(numi As String, ByRef mensaje As String) As Boolean
         Dim _resultado As Boolean
@@ -643,9 +653,7 @@ Public Class AccesoLogica
         End If
         Return _resultado
     End Function
-
-
-    Public Shared Function L_fnGrabarCLiente(ByRef _ydnumi As String,
+   Public Shared Function L_fnGrabarCLiente(ByRef _ydnumi As String,
                                              _ydcod As String, _ydrazonsocial As String, _yddesc As String,
                                              _ydnumiVendedor As Integer, _ydzona As Integer, _yddct As Integer,
                                              _yddctnum As String, _yddirec As String, _ydtelf1 As String,
