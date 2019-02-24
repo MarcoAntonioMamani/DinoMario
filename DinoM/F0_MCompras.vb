@@ -93,6 +93,7 @@ Public Class F0_MCompras
         End With
     End Sub
     Private Sub _prInhabiliitar()
+        tbnrocod.ReadOnly = True
         tbCodigo.ReadOnly = True
         tbProveedor.ReadOnly = True
         tbObservacion.ReadOnly = True
@@ -118,7 +119,7 @@ Public Class F0_MCompras
     End Sub
     Private Sub _prhabilitar()
         grCompra.Enabled = False
-        tbCodigo.ReadOnly = False
+        'tbnrocod.ReadOnly = False
         ''  tbCliente.ReadOnly = False  por que solo podra seleccionar Cliente
         ''  tbVendedor.ReadOnly = False
         tbObservacion.ReadOnly = False
@@ -139,7 +140,7 @@ Public Class F0_MCompras
         Dim _Mpos As Integer
         _prCargarCompra()
         If grCompra.RowCount > 0 Then
-            _MPos = 0
+            _Mpos = 0
             grCompra.Row = _Mpos
         Else
             _Limpiar()
@@ -147,6 +148,7 @@ Public Class F0_MCompras
         End If
     End Sub
     Private Sub _Limpiar()
+        tbnrocod.Clear()
         tbCodigo.Clear()
         tbProveedor.Clear()
         tbObservacion.Clear()
@@ -181,7 +183,17 @@ Public Class F0_MCompras
         End If
         tbProveedor.Focus()
         Table_Producto = Nothing
+
+        tbnrocod.Text = _fnSiguienteNumiCompra() + 1
     End Sub
+    Public Function _fnSiguienteNumiCompra() As Integer
+        Dim dt As DataTable = CType(grCompra.DataSource, DataTable)
+        Dim rows() As DataRow = dt.Select("canumi=MAX(canumi)")
+        If (rows.Count > 0) Then
+            Return rows(rows.Count - 1).Item("canumi")
+        End If
+        Return 1
+    End Function
     Public Sub _prMostrarRegistro(_N As Integer)
         '' grVentas.Row = _N
         'a.canumi ,a.caalm ,a.cafdoc ,a.caty4prov ,proveedor .yddesc as proveedor ,a.catven ,a.cafvcr ,
@@ -189,6 +201,7 @@ Public Class F0_MCompras
         'a.cadesc ,a.cafact ,a.cahact ,a.cauact,(Sum(b.cbptot)-a.cadesc ) as total
 
         With grCompra
+            tbnrocod.Text = .GetValue("canumi")
             tbCodigo.Text = .GetValue("canumi")
             tbFechaVenta.Value = .GetValue("cafdoc")
             _CodProveedor = .GetValue("caty4prov")
@@ -525,11 +538,11 @@ Public Class F0_MCompras
 
         'Else
         dt = L_fnListarProductosCompra(cbSucursal.Value, 73, CType(grdetalle.DataSource, DataTable))
-            Table_Producto = dt.Copy
 
-            'End If
-            ''1=Almacen  73=Cat Precio Costo
-            grProductos.DataSource = dt
+
+        'End If
+        ''1=Almacen  73=Cat Precio Costo
+        grProductos.DataSource = dt
         grProductos.RetrieveStructure()
         grProductos.AlternatingColors = True
 
@@ -590,7 +603,7 @@ Public Class F0_MCompras
                 .Width = 250
                 .Caption = dtname.Rows(0).Item("Grupo 4").ToString
                 .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = True
+                .Visible = False
             End With
         Else
             With grProductos.RootTable.Columns("grupo1")
@@ -808,7 +821,7 @@ Public Class F0_MCompras
     End Sub
     Public Function _ValidarCampos() As Boolean
         If (_CodProveedor <= 0) Then
-            Dim img As Bitmap = New Bitmap(My.Resources.Mensaje, 50, 50)
+            Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
             ToastNotification.Show(Me, "Por Favor Seleccione un Proveedor con Ctrl+Enter".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
             tbProveedor.Focus()
             Return False
@@ -818,7 +831,7 @@ Public Class F0_MCompras
         If (grdetalle.RowCount = 1) Then
             grdetalle.Row = grdetalle.RowCount - 1
             If (grdetalle.GetValue("cbty5prod") = 0) Then
-                Dim img As Bitmap = New Bitmap(My.Resources.Mensaje, 50, 50)
+                Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
                 ToastNotification.Show(Me, "Por Favor Seleccione  un detalle de producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
                 Return False
             End If
@@ -827,7 +840,7 @@ Public Class F0_MCompras
         If (cbSucursal.SelectedIndex < 0) Then
 
 
-            Dim img As Bitmap = New Bitmap(My.Resources.Mensaje, 50, 50)
+            Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
             ToastNotification.Show(Me, "Por Favor Seleccione una Sucursal".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
             tbProveedor.Focus()
             Return False
@@ -857,7 +870,7 @@ Public Class F0_MCompras
 
             _prCargarCompra()
 
-            _Limpiar()
+            _prSalir()
 
         Else
             Dim img As Bitmap = New Bitmap(My.Resources.cancel, 50, 50)
@@ -942,7 +955,7 @@ Public Class F0_MCompras
         btnGrabar.Enabled = True
         PanelNavegacion.Enabled = False
 
-   
+
     End Sub
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
         _prSalir()
@@ -986,7 +999,9 @@ Public Class F0_MCompras
 
                         _CodProveedor = Row.Cells("ydnumi").Value
                         tbProveedor.Text = Row.Cells("yddesc").Value
-                        tbObservacion.Focus()
+                        grdetalle.Select()
+                        grdetalle.Col = 2
+                        grdetalle.Focus()
                     Catch ex As Exception
 
                     End Try
@@ -1100,7 +1115,9 @@ salirIf:
 
 
         End If
-
+        If (e.KeyData = Keys.Control + Keys.A) Then
+            btnGrabar.Focus()
+        End If
 
     End Sub
     Private Sub grProductos_KeyDown(sender As Object, e As KeyEventArgs) Handles grProductos.KeyDown
@@ -1150,7 +1167,7 @@ salirIf:
                     _DesHabilitarProductos()
                 Else
                     If (existe) Then
-                        Dim img As Bitmap = New Bitmap(My.Resources.Mensaje, 50, 50)
+                        Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
                         ToastNotification.Show(Me, "El producto ya existe en el detalle".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
                     End If
                 End If
