@@ -228,8 +228,7 @@ Public Class ModeloF1
                 'actualizar el grid de buscador
                 _PMCargarBuscador()
 
-                _PMOLimpiar()
-
+                _PMSalir()
             Else
                 Exit Sub
             End If
@@ -240,19 +239,18 @@ Public Class ModeloF1
 
             'actualizar el grid de buscador
             _PMCargarBuscador()
-
             _PMSalir()
         End If
     End Sub
 
     Private Sub _PMSalir()
-        'If btnGrabar.Enabled = True Then
-        '    _PMInhabilitar()
-        '    _PMPrimerRegistro()
+        If btnGrabar.Enabled = True Then
+            _PMInhabilitar()
+            _PMPrimerRegistro()
 
-        'Else
-        '    Me.Close()
-        'End If
+        Else
+            Me.Close()
+        End If
     End Sub
 #End Region
 
