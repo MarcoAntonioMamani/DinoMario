@@ -382,13 +382,15 @@ Public Class F0_Cobrar_Vendedor
     End Sub
 
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
-        _modulo.Select()
         _tab.Close()
+        _modulo.Select()
+
     End Sub
 
     Private Sub ButtonX2_Click(sender As Object, e As EventArgs) Handles ButtonX2.Click
-        _modulo.Select()
         _tab.Close()
+        _modulo.Select()
+
     End Sub
 
     Private Sub ButtonX1_Click(sender As Object, e As EventArgs)

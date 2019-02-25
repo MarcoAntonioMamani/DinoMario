@@ -905,13 +905,19 @@ Public Class F0_MCompras
             _prInhabiliitar()
             If grCompra.RowCount > 0 Then
 
-                _prMostrarRegistro(0)
+                Dim _pos As Integer = grCompra.Row
+                If grCompra.RowCount > 0 Then
+                    _pos = grCompra.RowCount - 1
+                    ''  _prMostrarRegistro(_pos)
+                    grCompra.Row = _pos
+                End If
 
             End If
         Else
+            _tab.Close()
             '  Public _modulo As SideNavItem
             _modulo.Select()
-            _tab.Close()
+
 
         End If
     End Sub

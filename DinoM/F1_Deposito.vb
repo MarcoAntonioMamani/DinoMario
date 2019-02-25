@@ -574,8 +574,9 @@ Public Class F1_Deposito
 
         Else
             '  Public _modulo As SideNavItem
-            _modulo.Select()
             _tab.Close()
+            _modulo.Select()
+
         End If
     End Sub
 End Class

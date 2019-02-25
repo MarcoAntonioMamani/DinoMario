@@ -903,8 +903,9 @@ Public Class F1_Productos
 
         Else
             '  Public _modulo As SideNavItem
-            _modulo.Select()
             _tab.Close()
+            _modulo.Select()
+
         End If
     End Sub
 

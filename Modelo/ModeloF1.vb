@@ -246,7 +246,7 @@ Public Class ModeloF1
     Private Sub _PMSalir()
         If btnGrabar.Enabled = True Then
             _PMInhabilitar()
-            _PMPrimerRegistro()
+            _PMUltimoRegistro()
 
         Else
             Me.Close()

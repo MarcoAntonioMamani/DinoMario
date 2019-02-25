@@ -476,8 +476,9 @@ Public Class F0_Precios
         If (_fnAccesible()) Then
             _prInhabiliitar()
         Else
-            _modulo.Select()
             _tab.Close()
+            _modulo.Select()
+
         End If
     End Sub
     Private Sub btnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click

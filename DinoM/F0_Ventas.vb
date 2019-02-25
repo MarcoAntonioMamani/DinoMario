@@ -1155,12 +1155,18 @@ Public Class F0_Ventas
             _prInhabiliitar()
             If grVentas.RowCount > 0 Then
 
-                _prMostrarRegistro(0)
+                Dim _pos As Integer = grVentas.Row
+                If grVentas.RowCount > 0 Then
+                    _pos = grVentas.RowCount - 1
+                    ''  _prMostrarRegistro(_pos)
+                    grVentas.Row = _pos
+                End If
 
             End If
         Else
-            _modulo.Select()
             _tab.Close()
+            _modulo.Select()
+
         End If
     End Sub
     Public Sub _prCargarIconELiminar()
