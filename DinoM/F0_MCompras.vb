@@ -559,7 +559,7 @@ Public Class F0_MCompras
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbty5prod") = Row.Cells("yfnumi").Value
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("producto") = Row.Cells("yfcdprod1").Value
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost") = Row.Cells("yhprecio").Value
-                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = Row.Cells("yhprecio").Value
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = 0
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 0
 
                 Dim PrecioVenta As Double = IIf(IsDBNull(Row.Cells("venta").Value), 0, Row.Cells("venta").Value)
