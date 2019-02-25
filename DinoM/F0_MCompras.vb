@@ -112,9 +112,7 @@ Public Class F0_MCompras
         grCompra.Enabled = True
         PanelNavegacion.Enabled = True
         grdetalle.RootTable.Columns("img").Visible = False
-        If (GPanelProductos.Visible = True) Then
-            _DesHabilitarProductos()
-        End If
+
 
     End Sub
     Private Sub _prhabilitar()
@@ -176,11 +174,7 @@ Public Class F0_MCompras
             .Visible = True
         End With
         _prAddDetalleVenta()
-        If (GPanelProductos.Visible = True) Then
-            GPanelProductos.Visible = False
-            PanelTotal.Visible = True
-            PanelInferior.Visible = True
-        End If
+
         tbProveedor.Focus()
         Table_Producto = Nothing
 
@@ -532,168 +526,72 @@ Public Class F0_MCompras
         If (cbSucursal.SelectedIndex < 0) Then
             Return
         End If
-        'If (Not IsNothing(Table_Producto)) Then
 
-        '    dt = Table_Producto.Copy
-
-        'Else
         dt = L_fnListarProductosCompra(cbSucursal.Value, 73, CType(grdetalle.DataSource, DataTable))
+        Dim listEstCeldas As New List(Of Modelo.Celda)
+        '     a.yfnumi, a.yfcdprod1
+        ',b.yhprecio,prevent.yhprecio as venta ,stock
+        listEstCeldas.Add(New Modelo.Celda("yfnumi,", False, "ID", 50))
+        listEstCeldas.Add(New Modelo.Celda("yfcdprod1", True, "Producto", 350))
+        listEstCeldas.Add(New Modelo.Celda("yhprecio,", False, "ID", 50))
+        listEstCeldas.Add(New Modelo.Celda("venta,", False, "ID", 50))
+        listEstCeldas.Add(New Modelo.Celda("stock", True, "Stock", 70))
 
 
-        'End If
-        ''1=Almacen  73=Cat Precio Costo
-        grProductos.DataSource = dt
-        grProductos.RetrieveStructure()
-        grProductos.AlternatingColors = True
+        Dim frmAyuda As Modelo.ModeloAyuda2
+        frmAyuda = New Modelo.ModeloAyuda2(900, 60, dt, "", listEstCeldas, "Producto", "yfcdprod1")
+        'Dim frmAyuda As Fr_Ayuda = New Fr_Ayuda(900, 60, dt, "Lista", listEstCeldas)
 
-        '      a.yfnumi ,a.yfcprod ,a.yfcdprod1,a.yfcdprod2 ,a.yfgr1,gr1.ycdes3 as grupo1,a.yfgr2
-        ',gr2.ycdes3 as grupo2 ,a.yfgr3,gr3.ycdes3 as grupo3,a.yfgr4 ,gr4 .ycdes3 as grupo4,a.yfumin ,Umin .ycdes3 as UnidMin
-        ' ,b.yhprecio 
+        'frmAyuda = New Modelo.ModeloAyuda2(alto, ancho, dt, Context.ToUpper, listEstCeldas, NameLabel, NamelColumna)
+        Dim tamano As Size = New Size((42 * Me.Size.Width) / 100, Me.Size.Height)
 
-        With grProductos.RootTable.Columns("yfnumi")
-            .Width = 100
-            .Caption = "CODIGO"
-            .Visible = False
+        frmAyuda.Size = tamano
 
-        End With
-        With grProductos.RootTable.Columns("yfcprod")
-            .Width = 100
-            .Caption = "CODIGO PRODUCTO"
-            .Visible = True
+        frmAyuda.ShowDialog()
+        If frmAyuda.seleccionado = True Then
+            Dim Row As Janus.Windows.GridEX.GridEXRow
+            Row = frmAyuda.filaSelect
+            Dim pos As Integer = -1
+            grdetalle.Row = grdetalle.RowCount - 1
+            _fnObtenerFilaDetalle(pos, grdetalle.GetValue("cbnumi"))
+            Dim existe As Boolean = _fnExisteProducto(Row.Cells("yfnumi").Value)
+            If ((pos >= 0) And (Not existe)) Then
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbty5prod") = Row.Cells("yfnumi").Value
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("producto") = Row.Cells("yfcdprod1").Value
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost") = Row.Cells("yhprecio").Value
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = Row.Cells("yhprecio").Value
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 0
 
-        End With
+                Dim PrecioVenta As Double = IIf(IsDBNull(Row.Cells("venta").Value), 0, Row.Cells("venta").Value)
+                If (PrecioVenta > 0) Then
+                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbprven") = PrecioVenta
+                    Dim montodesc As Double = PrecioVenta - Row.Cells("yhprecio").Value
+                    Dim precio As Integer = IIf(IsDBNull(Row.Cells("yhprecio").Value), 0, Row.Cells("yhprecio").Value)
+                    If (precio = 0) Then
+                        CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbutven") = 100
+                    Else
+                        Dim pordesc As Double = ((montodesc * 100) / Row.Cells("yhprecio").Value)
+                        CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbutven") = pordesc
+                    End If
 
-        With grProductos.RootTable.Columns("yfcdprod1")
-            .Width = 600
-            .Visible = True
-            .Caption = "Descripcion"
-        End With
-        With grProductos.RootTable.Columns("yfcdprod2")
-            .Width = 150
-            .Visible = False
-            .Caption = "Descripcion Corta"
-        End With
 
-        With grProductos.RootTable.Columns("yfgr1")
-            .Width = 160
-            .Visible = False
-        End With
-        If (dtname.Rows.Count > 0) Then
+                Else
+                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbutven") = _PorcentajeUtil
+                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbprven") = (Row.Cells("yhprecio").Value + ((Row.Cells("yhprecio").Value) * (_PorcentajeUtil / 100)))
 
-            With grProductos.RootTable.Columns("grupo1")
-                .Width = 120
-                .Caption = dtname.Rows(0).Item("Grupo 1").ToString
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
-            With grProductos.RootTable.Columns("grupo2")
-                .Width = 120
-                .Caption = dtname.Rows(0).Item("Grupo 2").ToString
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
 
-            With grProductos.RootTable.Columns("grupo3")
-                .Width = 120
-                .Caption = dtname.Rows(0).Item("Grupo 3").ToString
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
-            With grProductos.RootTable.Columns("grupo4")
-                .Width = 250
-                .Caption = dtname.Rows(0).Item("Grupo 4").ToString
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
-        Else
-            With grProductos.RootTable.Columns("grupo1")
-                .Width = 120
-                .Caption = "Grupo 1"
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
-            With grProductos.RootTable.Columns("grupo2")
-                .Width = 120
-                .Caption = "Grupo 2"
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
-            With grProductos.RootTable.Columns("grupo3")
-                .Width = 120
-                .Caption = "Grupo 3"
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = False
-            End With
-            With grProductos.RootTable.Columns("grupo4")
-                .Width = 250
-                .Caption = "Grupo 4"
-                .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-                .Visible = True
-            End With
+                End If
+
+
+                _prCalcularPrecioTotal()
+                _DesHabilitarProductos()
+            Else
+                If (existe) Then
+                    Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                    ToastNotification.Show(Me, "El producto ya existe en el detalle".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                End If
+            End If
         End If
-
-
-        With grProductos.RootTable.Columns("yfgr2")
-            .Width = 50
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-        End With
-
-        With grProductos.RootTable.Columns("yfgr3")
-            .Width = 50
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-        End With
-
-        With grProductos.RootTable.Columns("yfgr4")
-            .Width = 50
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-        End With
-
-
-        With grProductos.RootTable.Columns("yfumin")
-            .Width = 50
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-        End With
-        With grProductos.RootTable.Columns("UnidMin")
-            .Width = 100
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-            .Caption = "Unidad Min."
-        End With
-        With grProductos.RootTable.Columns("yhprecio")
-            .Width = 90
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-            .Caption = "Precio Costo"
-            .FormatString = "0.00"
-        End With
-
-        With grProductos.RootTable.Columns("venta")
-            .Width = 105
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = False
-            .Caption = "Precio Venta"
-            .FormatString = "0.00"
-        End With
-        With grProductos.RootTable.Columns("stock")
-            .Width = 100
-            .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Near
-            .Visible = True
-            .Caption = "Stock"
-            .FormatString = "0.00"
-        End With
-
-        With grProductos
-            .DefaultFilterRowComparison = FilterConditionOperator.BeginsWith
-            .FilterMode = FilterMode.Automatic
-            .FilterRowUpdateMode = FilterRowUpdateMode.WhenValueChanges
-            .GroupByBoxVisible = False
-            'diseño de la grilla
-            .VisualStyle = VisualStyle.Office2007
-        End With
     End Sub
     Private Sub _prAddDetalleVenta()
         '     a.cbnumi ,a.cbtv1numi ,a.cbty5prod ,b.yfcdprod1 as producto,a.cbest ,a.cbcmin 
@@ -701,7 +599,7 @@ Public Class F0_MCompras
         ',a.cbutven ,a.cbprven   ,a.cbobs ,
         'a.cbfact ,a.cbhact ,a.cbuact,1 as estado,Cast(null as Image) as img,a.cbpcost as costo,a.cbprven as venta
         Dim Bin As New MemoryStream
-        Dim img As New Bitmap(My.Resources.delete, 28, 28)
+        Dim img As New Bitmap(My.Resources.delete, 20, 20)
         img.Save(Bin, Imaging.ImageFormat.Png)
         CType(grdetalle.DataSource, DataTable).Rows.Add(_fnSiguienteNumi() + 1, 0, 0, "", 0, 0, 0, "",
                                                         0, "20170101", CDate("2017/01/01"), 0, 0, 0, "", Now.Date, "", "", 0, Bin.GetBuffer, 0, 0)
@@ -719,24 +617,16 @@ Public Class F0_MCompras
         Return tbFechaVenta.IsInputReadOnly = False
     End Function
     Private Sub _HabilitarProductos()
-        GPanelProductos.Visible = True
-        PanelTotal.Visible = False
-        PanelInferior.Visible = False
+
+
         _prCargarProductos(73) ''''Aqui poner el Primer Precio de Costo
-        grProductos.Focus()
-        grProductos.MoveTo(grProductos.FilterRow)
-        grProductos.Col = 2
+
     End Sub
     Private Sub _DesHabilitarProductos()
-        GPanelProductos.Visible = False
-        PanelTotal.Visible = True
-        PanelInferior.Visible = True
-
-
         grdetalle.Select()
         grdetalle.Col = 5
         grdetalle.Row = grdetalle.RowCount - 1
-
+        grdetalle.SetValue("cbcmin", DBNull.Value)
     End Sub
     Public Sub _fnObtenerFilaDetalle(ByRef pos As Integer, numi As Integer)
         For i As Integer = 0 To CType(grdetalle.DataSource, DataTable).Rows.Count - 1 Step 1
@@ -835,7 +725,22 @@ Public Class F0_MCompras
                 ToastNotification.Show(Me, "Por Favor Seleccione  un detalle de producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
                 Return False
             End If
-
+            If (IsDBNull(grdetalle.GetValue("cbcmin"))) Then
+                Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                ToastNotification.Show(Me, "Por Favor inserte una cantidad al producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                grdetalle.Select()
+                grdetalle.Col = 5
+                grdetalle.Focus()
+                Return False
+            End If
+            If (grdetalle.GetValue("cbcmin") <= 0) Then
+                Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                ToastNotification.Show(Me, "Por Favor inserte una cantidad al producto".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                grdetalle.Select()
+                grdetalle.Col = 5
+                grdetalle.Focus()
+                Return False
+            End If
         End If
         If (cbSucursal.SelectedIndex < 0) Then
 
@@ -908,7 +813,7 @@ Public Class F0_MCompras
                 Dim _pos As Integer = grCompra.Row
                 If grCompra.RowCount > 0 Then
                     _pos = grCompra.RowCount - 1
-                    ''  _prMostrarRegistro(_pos)
+                    _prMostrarRegistro(_pos)
                     grCompra.Row = _pos
                 End If
 
@@ -924,7 +829,7 @@ Public Class F0_MCompras
     Public Sub _prCargarIconELiminar()
         For i As Integer = 0 To CType(grdetalle.DataSource, DataTable).Rows.Count - 1 Step 1
             Dim Bin As New MemoryStream
-            Dim img As New Bitmap(My.Resources.delete, 28, 28)
+            Dim img As New Bitmap(My.Resources.delete, 20, 20)
             img.Save(Bin, Imaging.ImageFormat.Png)
             CType(grdetalle.DataSource, DataTable).Rows(i).Item("img") = Bin.GetBuffer
             grdetalle.RootTable.Columns("img").Visible = True
@@ -1126,79 +1031,23 @@ salirIf:
         End If
 
     End Sub
-    Private Sub grProductos_KeyDown(sender As Object, e As KeyEventArgs) Handles grProductos.KeyDown
-        If (Not _fnAccesible()) Then
-            Return
-        End If
-        If (e.KeyData = Keys.Enter) Then
-            Dim f, c As Integer
-            c = grProductos.Col
-            f = grProductos.Row
-            If (f >= 0) Then
-                Dim pos As Integer = -1
-                grdetalle.Row = grdetalle.RowCount - 1
-                _fnObtenerFilaDetalle(pos, grdetalle.GetValue("cbnumi"))
-                Dim existe As Boolean = _fnExisteProducto(grProductos.GetValue("yfnumi"))
-                If ((pos >= 0) And (Not existe)) Then
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbty5prod") = grProductos.GetValue("yfnumi")
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("producto") = grProductos.GetValue("yfcdprod1")
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbumin") = grProductos.GetValue("yfumin")
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("unidad") = grProductos.GetValue("UnidMin")
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost") = grProductos.GetValue("yhprecio")
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = grProductos.GetValue("yhprecio")
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 1
 
-                    Dim PrecioVenta As Double = IIf(IsDBNull(grProductos.GetValue("venta")), 0, grProductos.GetValue("venta"))
-                    If (PrecioVenta > 0) Then
-                        CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbprven") = PrecioVenta
-                        Dim montodesc As Double = PrecioVenta - grProductos.GetValue("yhprecio")
-                        Dim precio As Integer = IIf(IsDBNull(grProductos.GetValue("yhprecio")), 0, grProductos.GetValue("yhprecio"))
-                        If (precio = 0) Then
-                            CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbutven") = 100
-                        Else
-                            Dim pordesc As Double = ((montodesc * 100) / grProductos.GetValue("yhprecio"))
-                            CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbutven") = pordesc
-                        End If
-
-
-                    Else
-                        CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbutven") = _PorcentajeUtil
-                        CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbprven") = (grProductos.GetValue("yhprecio") + ((grProductos.GetValue("yhprecio")) * (_PorcentajeUtil / 100)))
-
-
-                    End If
-
-
-                    _prCalcularPrecioTotal()
-                    _DesHabilitarProductos()
-                Else
-                    If (existe) Then
-                        Dim img As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
-                        ToastNotification.Show(Me, "El producto ya existe en el detalle".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
-                    End If
-                End If
-            End If
-        End If
-        If e.KeyData = Keys.Escape Then
-            _DesHabilitarProductos()
-        End If
-    End Sub
     Private Sub grdetalle_CellValueChanged(sender As Object, e As ColumnActionEventArgs) Handles grdetalle.CellValueChanged
         Dim lin As Integer = grdetalle.GetValue("cbnumi")
         Dim pos As Integer = -1
         _fnObtenerFilaDetalle(pos, lin)
         If (e.Column.Index = grdetalle.RootTable.Columns("cbcmin").Index) Then
-            If (Not IsNumeric(grdetalle.GetValue("cbcmin")) Or grdetalle.GetValue("cbcmin").ToString = String.Empty) Then
-                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 1
-                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
+            If (Not IsNumeric(grdetalle.GetValue("cbcmin")) Or grdetalle.GetValue("cbcmin").ToString = String.Empty Or IsDBNull(grdetalle.GetValue("cbcmin"))) Then
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 0
+                CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = 0
             Else
                 If (grdetalle.GetValue("cbcmin") > 0) Then
                     Dim rowIndex As Integer = grdetalle.Row
                     P_PonerTotal(rowIndex)
                 Else
 
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 1
-                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
+                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbcmin") = 0
+                    CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = 0
                     _prCalcularPrecioTotal()
                 End If
             End If
@@ -1207,7 +1056,8 @@ salirIf:
         ''''''''''''''''''''''COSTO  ''''''''''''''''''''''''''''''''''''''''''
         If (e.Column.Index = grdetalle.RootTable.Columns("cbpcost").Index) Then
             If (Not IsNumeric(grdetalle.GetValue("cbpcost")) Or grdetalle.GetValue("cbpcost").ToString = String.Empty) Then
-                Dim cantidad As Double = grdetalle.GetValue("cbcmin")
+
+                Dim cantidad As Double = IIf(IsDBNull(grdetalle.GetValue("cbcmin")), 0, grdetalle.GetValue("cbcmin"))
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost") = CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = cantidad * CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
                 CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbprven") = _PorcentajeUtil * CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
@@ -1219,7 +1069,7 @@ salirIf:
                     P_PonerTotal(rowIndex)
                 Else
 
-                    Dim cantidad As Double = grdetalle.GetValue("cbcmin")
+                    Dim cantidad As Double = IIf(IsDBNull(grdetalle.GetValue("cbcmin")), 0, grdetalle.GetValue("cbcmin"))
                     CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost") = CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
                     CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbptot") = cantidad * CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
                     CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbprven") = _PorcentajeUtil * CType(grdetalle.DataSource, DataTable).Rows(pos).Item("cbpcost")
@@ -1355,18 +1205,18 @@ salirIf:
 
     Private Sub grdetalle_CellEdited(sender As Object, e As ColumnActionEventArgs) Handles grdetalle.CellEdited
         If (e.Column.Index = grdetalle.RootTable.Columns("cbcmin").Index) Then
-            If (Not IsNumeric(grdetalle.GetValue("cbcmin")) Or grdetalle.GetValue("cbcmin").ToString = String.Empty) Then
+            If (Not IsNumeric(grdetalle.GetValue("cbcmin")) Or grdetalle.GetValue("cbcmin").ToString = String.Empty Or IsDBNull(grdetalle.GetValue("cbcmin"))) Then
 
-                grdetalle.SetValue("cbcmin", 1)
-                grdetalle.SetValue("cbptot", grdetalle.GetValue("cbpcost"))
+                grdetalle.SetValue("cbcmin", 0)
+                grdetalle.SetValue("cbptot", 0)
             Else
                 If (grdetalle.GetValue("cbcmin") > 0) Then
 
 
                 Else
 
-                    grdetalle.SetValue("cbcmin", 1)
-                    grdetalle.SetValue("cbptot", grdetalle.GetValue("cbpcost"))
+                    grdetalle.SetValue("cbcmin", 0)
+                    grdetalle.SetValue("cbptot", 0)
 
                 End If
             End If
@@ -1512,9 +1362,7 @@ salirIf:
 
     Private Sub cbSucursal_ValueChanged(sender As Object, e As EventArgs) Handles cbSucursal.ValueChanged
         If (tbObservacion.ReadOnly = False) Then
-            If (GPanelProductos.Visible = True) Then
-                _DesHabilitarProductos()
-            End If
+
             _prCargarDetalleVenta(-1)
             _prAddDetalleVenta()
         End If

@@ -699,7 +699,6 @@ Public Class F0_Ventas
         Dim dt As New DataTable
 
         dt = L_fnListarProductosSinLote(cbSucursal.Value, _cliente, CType(grdetalle.DataSource, DataTable))  ''1=Almacen
-        Table_Producto = dt.Copy
         actualizarSaldoSinLote(dt)
         Dim listEstCeldas As New List(Of Modelo.Celda)
         ''      a.yfnumi ,a.yfcprod ,a.yfcdprod1,a.yfcdprod2 ,a.yfgr1,gr1.ycdes3 as grupo1,a.yfgr2
