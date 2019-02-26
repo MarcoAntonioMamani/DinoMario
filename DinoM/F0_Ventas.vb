@@ -695,6 +695,7 @@ Public Class F0_Ventas
         If (cbSucursal.SelectedIndex < 0) Then
             Return
         End If
+
         Dim dtname As DataTable = L_fnNameLabel()
         Dim dt As New DataTable
 
@@ -833,6 +834,9 @@ Public Class F0_Ventas
     Private Sub _prAddDetalleVenta()
         '   a.tbnumi ,a.tbtv1numi ,a.tbty5prod ,b.yfcdprod1 as producto,a.tbest ,a.tbcmin ,a.tbumin ,Umin .ycdes3 as unidad,a.tbpbas ,a.tbptot ,a.tbobs ,
         'a.tbpcos,a.tblote ,a.tbfechaVenc , a.tbptot2, a.tbfact ,a.tbhact ,a.tbuact,1 as estado,Cast(null as Image) as img
+
+
+
         Dim Bin As New MemoryStream
         Dim img As New Bitmap(My.Resources.delete, 20, 20)
         img.Save(Bin, Imaging.ImageFormat.Png)
@@ -1357,13 +1361,19 @@ Public Class F0_Ventas
 
             Dim dt4 As DataTable = L_fnVentaNotaDeVenta(numi)
             Dim objrep As New R_ProformaCompleta
+            If PrintDialog1.ShowDialog = DialogResult.OK Then
+
+                objrep.Subreports.Item("R_ProformaPreImpresa.rpt").SetDataSource(dt4)
+                objrep.SetDataSource(dt4)
+                objrep.PrintOptions.PrinterName = PrintDialog1.PrinterSettings.PrinterName
+                objrep.PrintToPrinter(1, False, 1, 10)
+            End If
+
 
             '' GenerarNro(_dt)
             ''objrep.SetDataSource(Dt1Kardex)
 
-            objrep.Subreports.Item("R_ProformaPreImpresa.rpt").SetDataSource(dt4)
 
-            objrep.SetDataSource(dt4)
 
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetDataSource(dt4)
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("dia", Now.Date.Day)
@@ -1371,20 +1381,20 @@ Public Class F0_Ventas
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("ano", Now.Date.Year)
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("condicionespago", "")
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("vencicredito", "")
-            P_Global.Visualizador.CrGeneral.ReportSource = objrep 'Comentar
-            P_Global.Visualizador.Show() 'Comentar
-            P_Global.Visualizador.BringToFront() 'Comentar
+            'P_Global.Visualizador.CrGeneral.ReportSource = objrep 'Comentar
+            'P_Global.Visualizador.Show() 'Comentar
+            'P_Global.Visualizador.BringToFront() 'Comentar
         Else
 
             Dim dt4 As DataTable = L_fnVentaNotaDeVenta(numi)
             Dim objrep As New R_ProformaCompleta
+            If PrintDialog1.ShowDialog = DialogResult.OK Then
 
-            '' GenerarNro(_dt)
-            ''objrep.SetDataSource(Dt1Kardex)
-
-            objrep.Subreports.Item("R_ProformaPreImpresa.rpt").SetDataSource(dt4)
-
-            objrep.SetDataSource(dt4)
+                objrep.Subreports.Item("R_ProformaPreImpresa.rpt").SetDataSource(dt4)
+                objrep.SetDataSource(dt4)
+                objrep.PrintOptions.PrinterName = PrintDialog1.PrinterSettings.PrinterName
+                objrep.PrintToPrinter(1, False, 1, 1)
+            End If
 
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetDataSource(dt4)
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("dia", Now.Date.Day)
@@ -1392,9 +1402,9 @@ Public Class F0_Ventas
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("ano", Now.Date.Year)
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("condicionespago", "")
             'objrep.Subreports.Item("R_ProformaPreImpresa-01.rpt").SetParameterValue("vencicredito", "")
-            P_Global.Visualizador.CrGeneral.ReportSource = objrep 'Comentar
-            P_Global.Visualizador.Show() 'Comentar
-            P_Global.Visualizador.BringToFront() 'Comentar
+            'P_Global.Visualizador.CrGeneral.ReportSource = objrep 'Comentar
+            'P_Global.Visualizador.Show() 'Comentar
+            'P_Global.Visualizador.BringToFront() 'Comentar
         End If
 
     End Sub
@@ -1686,19 +1696,29 @@ Public Class F0_Ventas
 
             If (grdetalle.Col = grdetalle.RootTable.Columns("tbcmin").Index) Then
                 If (grdetalle.GetValue("producto") <> String.Empty) Then
-                    _prAddDetalleVenta()
-                    _HabilitarProductos()
+
+                    If (Not _fnVerificarMaxProducto()) Then
+                        Dim img2 As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                        ToastNotification.Show(Me, "Ya ha Sobrepasado la Cantidad Maxima de Venta que es =10".ToUpper, img2, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                        Return
+                    Else
+                        _prAddDetalleVenta()
+                        _HabilitarProductos()
+                    End If
+
                 Else
                     ToastNotification.Show(Me, "Seleccione un Producto Por Favor", My.Resources.WARNING, 3000, eToastGlowColor.Red, eToastPosition.TopCenter)
                 End If
 
             End If
             If (grdetalle.Col = grdetalle.RootTable.Columns("producto").Index) Then
-                If (grdetalle.GetValue("producto") <> String.Empty) Then
+                If (Not _fnVerificarMaxProducto()) Then
+                    Dim img2 As Bitmap = New Bitmap(My.Resources.mensaje, 50, 50)
+                    ToastNotification.Show(Me, "Ya ha Sobrepasado la Cantidad Maxima de Venta que es =10".ToUpper, img2, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                    Return
+                Else
                     _prAddDetalleVenta()
                     _HabilitarProductos()
-                Else
-                    ToastNotification.Show(Me, "Seleccione un Producto Por Favor", My.Resources.WARNING, 3000, eToastGlowColor.Red, eToastPosition.TopCenter)
                 End If
 
             End If
@@ -1737,7 +1757,7 @@ salirIf:
 
         If (e.KeyData = Keys.Control + Keys.A) Then
 
-            tbMdesc.Focus()
+            tbPdesc.Focus()
 
 
         End If
@@ -2555,8 +2575,17 @@ salirIf:
         If (tbObservacion.ReadOnly = True) Then
             Return
         End If
-        If (e.KeyData = Keys.Enter) Then
+        If (e.KeyData = Keys.Enter Or e.KeyData = Keys.Tab) Then
             btnGrabar.Focus()
+        End If
+    End Sub
+
+    Private Sub tbPdesc_KeyDown(sender As Object, e As KeyEventArgs) Handles tbPdesc.KeyDown
+        If (tbObservacion.ReadOnly = True ) Then
+            Return
+        End If
+        If (e.KeyData = Keys.Enter Or e.KeyData = Keys.Tab) Then
+            tbMdesc.Focus()
         End If
     End Sub
 
