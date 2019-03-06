@@ -176,6 +176,7 @@ Partial Class F0_Precios
         '
         Me.btnImprimir.Dock = System.Windows.Forms.DockStyle.Right
         Me.btnImprimir.Location = New System.Drawing.Point(160, 0)
+        Me.btnImprimir.Visible = False
         '
         'btnUltimo
         '
