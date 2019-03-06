@@ -163,7 +163,7 @@ Public Class ModeloF1
             _PMOMostrarRegistro(_MPos)
         End If
     End Sub
-    Private Sub _PMUltimoRegistro()
+    Public Sub _PMUltimoRegistro()
         If JGrM_Buscador.RowCount > 0 Then
             _MPos = JGrM_Buscador.RowCount - 1
             _PMOMostrarRegistro(_MPos)
@@ -228,7 +228,7 @@ Public Class ModeloF1
                 'actualizar el grid de buscador
                 _PMCargarBuscador()
 
-                _PMSalir()
+                _PrSalirAtras()
             Else
                 Exit Sub
             End If
@@ -239,11 +239,10 @@ Public Class ModeloF1
 
             'actualizar el grid de buscador
             _PMCargarBuscador()
-            _PMSalir()
+            _PrSalirAtras()
         End If
     End Sub
-
-    Private Sub _PMSalir()
+    Public Sub _PrSalirAtras()
         If btnGrabar.Enabled = True Then
             _PMInhabilitar()
             _PMUltimoRegistro()
@@ -252,6 +251,16 @@ Public Class ModeloF1
             Me.Close()
         End If
     End Sub
+
+    'Private Sub _PMSalir()
+    '    'If btnGrabar.Enabled = True Then
+    '    '    _PMInhabilitar()
+    '    '    _PMUltimoRegistro()
+
+    '    'Else
+    '    '    Me.Close()
+    '    'End If
+    'End Sub
 #End Region
 
 #Region "METODOS OVERRIDABLES"
@@ -362,7 +371,7 @@ Public Class ModeloF1
     End Sub
 
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
-        _PMSalir()
+        '_PMSalir()
     End Sub
 
     Private Sub JGrM_Buscador_EditingCell(sender As Object, e As EditingCellEventArgs) Handles JGrM_Buscador.EditingCell

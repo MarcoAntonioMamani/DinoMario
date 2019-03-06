@@ -308,7 +308,7 @@ Public Class F1_Zonas
     Public Sub _prSalir()
         If btnGrabar.Enabled = True Then
             _PMInhabilitar()
-            _PMPrimerRegistro()
+            _PMUltimoRegistro()
 
         Else
             _tab.Close()

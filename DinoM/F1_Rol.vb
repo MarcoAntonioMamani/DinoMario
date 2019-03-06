@@ -323,8 +323,7 @@ Public Class F1_Rol
     Private Sub _PSalirRegistro()
         If btnGrabar.Enabled = True Then
             _PMInhabilitar()
-            _PMPrimerRegistro()
-
+            _PMUltimoRegistro()
         Else
             '  Public _modulo As SideNavItem
             _modulo.Select()

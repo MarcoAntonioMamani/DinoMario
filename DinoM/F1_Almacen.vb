@@ -594,7 +594,7 @@ Public Class F1_Almacen
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
         If btnGrabar.Enabled = True Then
             _PMInhabilitar()
-            _PMPrimerRegistro()
+            _PMUltimoRegistro()
 
         Else
             '  Public _modulo As SideNavItem
