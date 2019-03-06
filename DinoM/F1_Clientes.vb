@@ -393,8 +393,7 @@ Public Class F1_Clientes
                                       img, 2000,
                                       eToastGlowColor.Green,
                                       eToastPosition.TopCenter)
-            _PMInhabilitar()
-            _PMPrimerRegistro()
+
         Else
             Dim img As Bitmap = New Bitmap(My.Resources.cancel, 50, 50)
             ToastNotification.Show(Me, "EL Cliente no pudo ser modificado".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)

@@ -186,6 +186,8 @@ Public Class Pr_StockMinimo
     End Sub
 
     Private Sub btn_Salir_Click(sender As Object, e As EventArgs) Handles btn_Salir.Click
+        Me.Close()
+
         _tab.Close()
     End Sub
 

@@ -32,7 +32,9 @@ Public Class P_Principal
 
         'iniciar login de usuario
         _prLogin()
-
+        Dim blah As New Bitmap(New Bitmap(My.Resources.almacen), 20, 20)
+        Dim ico As Icon = Icon.FromHandle(blah.GetHicon())
+        Me.Icon = ico
     End Sub
     Private Sub _prCambiarStyle()
         'tratar de cambiar estilo
@@ -584,6 +586,7 @@ Public Class P_Principal
         Dim frm As New Pr_SAldosPorAlmacenLinea
         Dim tab3 As SuperTabItem = superTabControl3.CreateTab(frm.Text)
         frm._tab = tab3
+        frm._modulo = FP_Configuracion
         Dim panel As Panel = P_Global._fnCrearPanelVentanas(frm)
         superTabControl3.SelectedTabIndex = superTabControl3.Tabs.Count - 1
         tab3.AttachedControl.Controls.Add(panel)
@@ -962,6 +965,21 @@ Public Class P_Principal
 
     Private Sub FP_VENTAS_Click(sender As Object, e As EventArgs) Handles FP_VENTAS.Click
 
+    End Sub
+
+    Private Sub btConfRepCliente_Click(sender As Object, e As EventArgs) Handles btConfRepCliente.Click
+        SideNav1.IsMenuExpanded = False
+        Ventana.Select()
+        Dim frm As New Pr_ClientesVendedorAlmacen
+        frm._nameButton = btConfRepCliente.Name
+        frm._modulo = FP_Configuracion
+        Dim tab3 As SuperTabItem = superTabControl3.CreateTab(frm.Text)
+        frm._tab = tab3
+        Dim panel As Panel = P_Global._fnCrearPanelVentanas(frm)
+        superTabControl3.SelectedTabIndex = superTabControl3.Tabs.Count - 1
+        tab3.AttachedControl.Controls.Add(panel)
+        frm.Show()
+        tab3.Text = "REPORTE CLIENTES"
     End Sub
 
     'Private Sub btnCredPagoCliente_Click(sender As Object, e As EventArgs) Handles btnCredPagoCliente.Click

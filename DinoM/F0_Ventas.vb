@@ -31,6 +31,7 @@ Public Class F0_Ventas
     Public _modulo As SideNavItem
     Dim FilaSelectLote As DataRow = Nothing
     Dim Table_Producto As DataTable
+    Dim DatosCargados As Boolean = False
     Dim Lote As Boolean = False '1=igual a mostrar las columnas de lote y fecha de Vencimiento
 #End Region
 
@@ -198,15 +199,17 @@ Public Class F0_Ventas
         End If
     End Sub
     Private Sub _Limpiar()
+
+        If (DatosCargados = False) Then
+
+            tbcodigovendedor.Clear()
+            tbvendedores.Clear()
+        End If
         tbProforma.Clear()
         tbCodigo.Clear()
         tbCliente.Clear()
-        tbcodigovendedor.Clear()
-
         tbnrocod.Clear()
-
         tbnrodoc.Clear()
-        tbvendedores.Clear()
         tbObservacion.Clear()
         swMoneda.Value = True
         swTipoVenta.Value = True
@@ -266,7 +269,7 @@ Public Class F0_Ventas
             tbvendedores.Text = .GetValue("vendedor")
             swTipoVenta.Value = .GetValue("tatven")
             _CodCliente = .GetValue("taclpr")
-            tbnrocod.Text = _CodCliente
+            tbnrocod.Text = .GetValue("codcliente")
             tbCliente.Text = .GetValue("cliente")
             swMoneda.Value = .GetValue("tamon")
             tbObservacion.Text = .GetValue("taobs")
@@ -1071,7 +1074,7 @@ Public Class F0_Ventas
             'If (gb_FacturaEmite) Then
             '    P_fnGenerarFactura(numi)
             'End If
-
+            DatosCargados = True
             Dim img As Bitmap = New Bitmap(My.Resources.checked, 50, 50)
             ToastNotification.Show(Me, "Código de Venta ".ToUpper + tbCodigo.Text + " Grabado con Exito.".ToUpper,
                                       img, 2000,
@@ -1085,8 +1088,8 @@ Public Class F0_Ventas
             End If
 
 
-            _prCargarVenta()
-            _prSalir()
+
+            _Limpiar()
 
         Else
             Dim img As Bitmap = New Bitmap(My.Resources.cancel, 50, 50)
@@ -1160,9 +1163,11 @@ Public Class F0_Ventas
 
                 Dim _pos As Integer = grVentas.Row
                 If grVentas.RowCount > 0 Then
+                    _prCargarVenta()
                     _pos = grVentas.RowCount - 1
                     ''  _prMostrarRegistro(_pos)
                     grVentas.Row = _pos
+                    DatosCargados = False
                 End If
 
             End If
@@ -2397,7 +2402,7 @@ salirIf:
             If (Not IsDBNull(dt)) Then
                 If (dt.Rows.Count > 0) Then
                     _CodCliente = dt.Rows(0).Item("ydnumi")
-                    tbnrocod.Text = dt.Rows(0).Item("ydcod")
+                    tbnrocod.Text = dt.Rows(0).Item("codigocliente")
                     tbCliente.Text = dt.Rows(0).Item("yddesc")
                     focusvendedor = True
                     tbcodigovendedor.Focus()
@@ -2458,7 +2463,7 @@ salirIf:
                 Dim Row As Janus.Windows.GridEX.GridEXRow = ef.Row
                 If (Not IsNothing(ef.Row)) Then
                     _CodCliente = Row.Cells("ydnumi").Value
-                    tbnrocod.Text = Row.Cells("codigo").Value
+                    tbnrocod.Text = Row.Cells("ydcod").Value
                     tbCliente.Text = Row.Cells("yddesc").Value
                     tbcodigovendedor.Focus()
                 End If

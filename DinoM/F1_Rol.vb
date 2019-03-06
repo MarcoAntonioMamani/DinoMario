@@ -244,7 +244,7 @@ Public Class F1_Rol
         If res Then
 
             ToastNotification.Show(Me, "Codigo de Personal ".ToUpper + tbNumi.Text + " modificado con Exito.".ToUpper, My.Resources.GRABACION_EXITOSA, 5000, eToastGlowColor.Green, eToastPosition.TopCenter)
-            _PSalirRegistro()
+
         End If
         Return res
     End Function

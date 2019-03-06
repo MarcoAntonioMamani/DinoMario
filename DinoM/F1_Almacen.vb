@@ -333,8 +333,7 @@ Public Class F1_Almacen
             ToastNotification.Show(Me, "EL Almacen no pudo ser modificado".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
 
         End If
-        _PMInhabilitar()
-        _PMPrimerRegistro()
+
         Return res
     End Function
 

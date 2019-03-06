@@ -367,6 +367,12 @@
     <Compile Include="Migracion\F0_Migrar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Pr_ClientesVendedorAlmacen.Designer.vb">
+      <DependentUpon>Pr_ClientesVendedorAlmacen.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Pr_ClientesVendedorAlmacen.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Pr_SAldosPorAlmacenLinea.Designer.vb">
       <DependentUpon>Pr_SAldosPorAlmacenLinea.vb</DependentUpon>
     </Compile>
@@ -450,6 +456,18 @@
     </Compile>
     <Compile Include="Pr_VentasAtendidas.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reporte\R_ClientePorAlmacen.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R_ClientePorAlmacen.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reporte\R_ClientePorVendedor.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R_ClientePorVendedor.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reporte\R_PreImpresaCompleta.vb">
       <AutoGen>True</AutoGen>
@@ -834,6 +852,9 @@
     <EmbeddedResource Include="Migracion\F0_Migrar.resx">
       <DependentUpon>F0_Migrar.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pr_ClientesVendedorAlmacen.resx">
+      <DependentUpon>Pr_ClientesVendedorAlmacen.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pr_SAldosPorAlmacenLinea.resx">
       <DependentUpon>Pr_SAldosPorAlmacenLinea.vb</DependentUpon>
     </EmbeddedResource>
@@ -875,6 +896,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pr_VentasAtendidas.resx">
       <DependentUpon>Pr_VentasAtendidas.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reporte\R_ClientePorAlmacen.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>R_ClientePorAlmacen.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reporte\R_ClientePorVendedor.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>R_ClientePorVendedor.vb</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reporte\R_PreImpresaCompleta.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

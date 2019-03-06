@@ -1,11 +1,13 @@
 ﻿Imports Logica.AccesoLogica
 Imports DevComponents.DotNetBar
 Imports System.Data.OleDb
+Imports DevComponents.DotNetBar.Controls
 Public Class Pr_SAldosPorAlmacenLinea
 
 
     Public _nameButton As String
     Public _tab As SuperTabItem
+    Public _modulo As SideNavItem
     Dim bandera As Boolean = False
 
     Private Function GetDataExcel( _
@@ -236,9 +238,8 @@ Public Class Pr_SAldosPorAlmacenLinea
     End Sub
 
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
-
         _tab.Close()
-
+        _modulo.Select()
     End Sub
 
     Private Sub swTipoVenta_ValueChanged(sender As Object, e As EventArgs)

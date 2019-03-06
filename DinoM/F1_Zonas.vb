@@ -300,8 +300,7 @@ Public Class F1_Zonas
         End If
         _PMFiltrar()
         _prCargarZonasTable()
-        _PMInhabilitar()
-        _PMPrimerRegistro()
+
         Return res
 
     End Function

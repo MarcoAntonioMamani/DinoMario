@@ -332,8 +332,8 @@ Public Class F1_Productos
             ToastNotification.Show(Me, "EL producto no pudo ser modificado".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
 
         End If
-        _PMInhabilitar()
-        _PMPrimerRegistro()
+        '_PMInhabilitar()
+        '_PMPrimerRegistro()
         Return res
     End Function
 
@@ -913,9 +913,7 @@ Public Class F1_Productos
 
     End Sub
 
-    Private Sub btnGrabar_Click(sender As Object, e As EventArgs) Handles btnGrabar.Click
 
-    End Sub
 
     Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         P_GenerarReporte()

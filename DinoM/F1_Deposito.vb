@@ -315,8 +315,7 @@ Public Class F1_Deposito
             ToastNotification.Show(Me, "EL Deposito no pudo ser modificado".ToUpper, img, 2000, eToastGlowColor.Red, eToastPosition.BottomCenter)
 
         End If
-        _PMInhabilitar()
-        _PMPrimerRegistro()
+
         Return res
     End Function
 
