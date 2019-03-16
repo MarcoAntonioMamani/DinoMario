@@ -72,6 +72,7 @@ Partial Class F1_Productos
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btExcel = New DevComponents.DotNetBar.ButtonX()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.ButtonX1 = New DevComponents.DotNetBar.ButtonX()
         CType(Me.SuperTabPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuperTabPrincipal.SuspendLayout()
         Me.SuperTabControlPanelRegistro.SuspendLayout()
@@ -142,6 +143,7 @@ Partial Class F1_Productos
         '
         'PanelSuperior
         '
+        Me.PanelSuperior.Controls.Add(Me.ButtonX1)
         Me.PanelSuperior.Margin = New System.Windows.Forms.Padding(5)
         Me.PanelSuperior.Size = New System.Drawing.Size(1770, 89)
         Me.PanelSuperior.Style.Alignment = System.Drawing.StringAlignment.Center
@@ -152,6 +154,9 @@ Partial Class F1_Productos
         Me.PanelSuperior.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder
         Me.PanelSuperior.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText
         Me.PanelSuperior.Style.GradientAngle = 90
+        Me.PanelSuperior.Controls.SetChildIndex(Me.PanelToolBar1, 0)
+        Me.PanelSuperior.Controls.SetChildIndex(Me.PanelToolBar2, 0)
+        Me.PanelSuperior.Controls.SetChildIndex(Me.ButtonX1, 0)
         '
         'PanelInferior
         '
@@ -193,12 +198,8 @@ Partial Class F1_Productos
         'TxtNombreUsu
         '
         Me.TxtNombreUsu.Margin = New System.Windows.Forms.Padding(5)
-        Me.TxtNombreUsu.Size = New System.Drawing.Size(267, 44)
         '
         'btnSalir
-        '
-        '
-        'btnGrabar
         '
         '
         'btnEliminar
@@ -207,7 +208,7 @@ Partial Class F1_Productos
         'PanelToolBar2
         '
         Me.PanelToolBar2.Controls.Add(Me.btExcel)
-        Me.PanelToolBar2.Location = New System.Drawing.Point(1522, 0)
+        Me.PanelToolBar2.Location = New System.Drawing.Point(1170, 0)
         Me.PanelToolBar2.Margin = New System.Windows.Forms.Padding(5)
         Me.PanelToolBar2.Size = New System.Drawing.Size(248, 89)
         Me.PanelToolBar2.Controls.SetChildIndex(Me.btnImprimir, 0)
@@ -305,10 +306,6 @@ Partial Class F1_Productos
         Me.btnImprimir.Margin = New System.Windows.Forms.Padding(5)
         Me.btnImprimir.Size = New System.Drawing.Size(143, 89)
         Me.btnImprimir.Visible = False
-        '
-        'btnUltimo
-        '
-        Me.btnUltimo.Location = New System.Drawing.Point(171, 0)
         '
         'MPanelUserAct
         '
@@ -1070,6 +1067,25 @@ Partial Class F1_Productos
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(1770, 405)
         Me.TableLayoutPanel1.TabIndex = 227
         '
+        'ButtonX1
+        '
+        Me.ButtonX1.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
+        Me.ButtonX1.ColorTable = DevComponents.DotNetBar.eButtonColor.Flat
+        Me.ButtonX1.Dock = System.Windows.Forms.DockStyle.Right
+        Me.ButtonX1.Font = New System.Drawing.Font("Arial", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ButtonX1.Image = Global.DinoM.My.Resources.Resources.codigobarra
+        Me.ButtonX1.ImageFixedSize = New System.Drawing.Size(45, 50)
+        Me.ButtonX1.ImagePosition = DevComponents.DotNetBar.eImagePosition.Top
+        Me.ButtonX1.Location = New System.Drawing.Point(1065, 0)
+        Me.ButtonX1.Margin = New System.Windows.Forms.Padding(4)
+        Me.ButtonX1.Name = "ButtonX1"
+        Me.ButtonX1.Padding = New System.Windows.Forms.Padding(0, 0, 0, 25)
+        Me.ButtonX1.Size = New System.Drawing.Size(105, 89)
+        Me.ButtonX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.OfficeMobile2014
+        Me.ButtonX1.TabIndex = 10
+        Me.ButtonX1.Text = "Codigo Barras"
+        Me.ButtonX1.TextColor = System.Drawing.Color.White
+        '
         'F1_Productos
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -1161,4 +1177,5 @@ Partial Class F1_Productos
     Friend WithEvents Panel3 As System.Windows.Forms.Panel
     Friend WithEvents Panel4 As System.Windows.Forms.Panel
     Friend WithEvents tbStockMinimo As DevComponents.Editors.IntegerInput
+    Friend WithEvents ButtonX1 As DevComponents.DotNetBar.ButtonX
 End Class
