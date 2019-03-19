@@ -1085,6 +1085,7 @@ Partial Class F1_Productos
         Me.ButtonX1.TabIndex = 10
         Me.ButtonX1.Text = "Codigo Barras"
         Me.ButtonX1.TextColor = System.Drawing.Color.White
+        Me.ButtonX1.Visible = False
         '
         'F1_Productos
         '

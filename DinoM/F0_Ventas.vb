@@ -384,7 +384,7 @@ Public Class F0_Ventas
             .Width = 160
             .CellStyle.TextAlignment = Janus.Windows.GridEX.TextAlignment.Far
             .Visible = True
-            .FormatString = "0.00"
+            .FormatString = "0"
             .Caption = "Cantidad".ToUpper
         End With
         With grdetalle.RootTable.Columns("tbumin")
@@ -2398,7 +2398,20 @@ salirIf:
             If (tbnrocod.Text = String.Empty) Then
                 Return
             End If
-            dt = L_fnListarClientesUno(tbnrocod.Text)
+            Dim code As String = tbnrocod.Text
+            If (code.Contains("-")) Then
+                Dim p As Integer
+                Try
+                    p = code.LastIndexOf("-") 'obtengo el punto
+                    code = code.Substring(p + 1) 'obtengo la extención
+                Catch ex As Exception
+                    Dim img As Bitmap = New Bitmap(My.Resources.cancel, 50, 50)
+                    ToastNotification.Show(Me, "El Codigo de Cliente no esta en el formato valido".ToUpper, img, 1500, eToastGlowColor.Red, eToastPosition.BottomCenter)
+                End Try
+
+            End If
+
+            dt = L_fnListarClientesUno(code)
             If (Not IsDBNull(dt)) Then
                 If (dt.Rows.Count > 0) Then
                     _CodCliente = dt.Rows(0).Item("ydnumi")
